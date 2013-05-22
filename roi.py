@@ -40,7 +40,7 @@ def mass_center(data):
     Return the center of mass of the data.
 
     """
-    return ndimage.meansurements.center_of_mass(data)
+    return ndimage.measurements.center_of_mass(data)
 
 def geometric_center(data):
     """
