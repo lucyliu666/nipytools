@@ -35,3 +35,19 @@ def merge_peak(data, marker, dthr):
                     marker[x[i], y[i], z[i]] = 0
     return marker
 
+def mass_center(data):
+    """
+    Return the center of mass of the data.
+
+    """
+    return ndimage.meansurements.center_of_mass(data)
+
+def geometric_center(data):
+    """
+    Return the geometric center of the data.
+
+    """
+    coord = np.nonzero(data)
+    max_coord = map(np.max, coord)
+    min_coord = map(np.min, coord)
+    return (np.array(max_coord) + np.array(min_coord))/2

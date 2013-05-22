@@ -110,3 +110,17 @@ def f_test(x, dfn, dfd):
 
     """
     return stats.f.cdf(x, dfn, dfd)
+
+def eig(x):
+    """
+    Input a data matrix x, and return the eigen value and eigen vector.
+    The computation is based on the covariance matrix of x.
+    x must be a two dimension matrix, and raw is sample, column is variable.
+
+    """
+    x = np.atleast_2d(x)
+    n_samples, n_features = x.shape
+    x -= np.mean(x, axis=0)
+    c = x.T.dot(x)
+    eigval, eigvtr = np.linalg.eig(c)
+    return eigval, eigvtr
