@@ -65,7 +65,7 @@ def corr4d(x, y):
     r_data[mask[..., 0]==0] = 0
     return r_data
 
-def nifti_corr(x, y):
+def corr3d(x, y):
     """
     Compute Pearson's correlation between data from two different nifti
     files.
@@ -103,6 +103,22 @@ def nifti_corr(x, y):
     y_data = np.ma.array(y, mask=1-mask)
     data = x_data - y_data * slope
     return data
+
+def x_divide_y(x, y):
+    """
+    x and y are two 3d data, and the function would return x/y in a
+    element-wise.
+
+    """
+    x_mask = x.copy()
+    x_mask[x_mask!=0] = 1
+    y_mask = y.copy()
+    y_mask[y_mask!=0] = 1
+    mask = x_mask * y_mask
+    x = np.ma.array(x, mask=1-mask)
+    y = np.ma.array(y, mask=1-mask)
+    ratio = x / y
+    return ratio * mask
 
 def f_test(x, dfn, dfd):
     """
