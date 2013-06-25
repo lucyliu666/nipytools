@@ -140,3 +140,10 @@ def eig(x):
     c = x.T.dot(x)
     eigval, eigvtr = np.linalg.eig(c)
     return eigval, eigvtr
+
+def flip_x(nifti_data):
+    """
+    Flip a 3d nifti volume about parasagittal plane through x = 0
+
+    """
+    return nifti_data[::-1, ...]
