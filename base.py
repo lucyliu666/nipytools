@@ -62,3 +62,4 @@ def run_save_cmd(cmd_list, f):
 def save2nifti(data, header, file_name):
     img = nib.Nifti1Image(data, None, header)
     nib.save(img, file_name)
+
