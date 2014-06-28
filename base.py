@@ -1,25 +1,8 @@
 # emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 
-import numpy as np
 import nibabel as nib
-import scipy.ndimage as ndimage
 import subprocess
-
-def t_test(mean_x1, mean_x2, std_x1, std_x2, len_x1, len_x2):
-    """
-    example:
-    --------
-    t_test(mean_x1, mean_x2, std_x1, std_x2, len_x1, len_x2)
-
-    """
-    s_x1x2 = (len_x1 - 1) * np.square(std_x1) + (len_x2 - 1) * np.square(std_x2)
-    s_x1x2 = np.sqrt(s_x1x2 / (len_x1 + len_x2 - 2))
-
-    temp = np.sqrt(1. / len_x1 + 1. / len_x2)
-    t = (mean_x1 - mean_x2) / s_x1x2 / temp
-
-    return t
 
 def vxl2mni(coordlist):
     """
@@ -34,13 +17,6 @@ def vxl2mni(coordlist):
                 -72 + 2 * item[2])
         mni_list.append(temp)
     return mni_list
-
-def  gradient_transformation(data):
-        gx = ndimage.sobel(data, 0)
-        gy = ndimage.sobel(data, 1)
-        gz = ndimage.sobel(data, 2)
-        grad = np.sqrt(gx**2 + gy**2 + gz**2)
-        return grad
 
 def read_par(par_file, tr):
     info = open(par_file).readlines()

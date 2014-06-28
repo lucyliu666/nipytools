@@ -147,3 +147,17 @@ def flip_x(nifti_data):
 
     """
     return nifti_data[::-1, ...]
+
+def t_test(x_mean, y_mean, x_std, y_std, x_len, y_len):
+    """
+    example:
+    --------
+    t_test(x_mean, y_mean, x_std, y_std, x_len, y_len)
+
+    """
+    x_xy = (x_len - 1) * np.square(x_std) + (y_len - 1) * np.square(y_std)
+    s_xy = np.sqrt(s_xy / (x_len + y_len - 2))
+    temp = np.sqrt(1. / x_len + 1. / y_len)
+    t = (x_mean - y_mean) / s_xy / temp
+    return t
+
