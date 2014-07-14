@@ -25,12 +25,14 @@ def dice_coef(a, b):
     Compuet the Dice's coefficient between sets a and b.
 
     """
-    a[a > 0] = 1
-    b[b > 0] = 1
-    a[a <= 0] = 0
-    b[b <= 0] = 0
-    intersection = a * b
-    return 2 * intersection.sum() / (a.sum() + b.sum())
+    a[a>0] = 1
+    b[b>0] = 1
+    a[a<=0] = 0
+    b[b<=0] = 0
+    if not a.sum():
+        if not b.sum():
+            return 1.0
+    return 2 * np.sum(a * b) / (a.sum() + b.sum())
 
 def corr4d(x, y):
     """
@@ -160,4 +162,38 @@ def t_test(x_mean, y_mean, x_std, y_std, x_len, y_len):
     temp = np.sqrt(1. / x_len + 1. / y_len)
     t = (x_mean - y_mean) / s_xy / temp
     return t
+
+def precision(true_data, predicted_data):
+    """
+    Get precision of the prediction.
+
+    """
+    true_data[true_data>0] = 1
+    true_data[true_data<0] = 0
+    predicted_data[predicted_data>0] = 1
+    predicted_data[predicted_data<0] = 0
+    if not predicted_data.sum():
+        if not true_data.sum():
+            return 1.0
+        else:
+            return 0
+    else:
+        return np.sum(true_data * predicted_data) / predicted_data.sum()
+
+def recall(true_data, predicted_data):
+    """
+    Get recall of the prediction.
+
+    """
+    true_data[true_data>0] = 1
+    true_data[true_data<0] = 0
+    predicted_data[predicted_data>0] = 1
+    predicted_data[predicted_data<0] = 0
+    if not true_data.sum():
+        if not predicted_data.sum():
+            return 1.0
+        else:
+            return 0
+    else:
+        return np.sum(true_data * predicted_data) / true_data.sum()
 
