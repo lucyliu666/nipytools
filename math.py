@@ -178,7 +178,7 @@ def precision(true_data, predicted_data):
         else:
             return 0
     else:
-        return np.sum(true_data * predicted_data) / predicted_data.sum()
+        return 1.0*np.sum(true_data * predicted_data) / predicted_data.sum()
 
 def recall(true_data, predicted_data):
     """
@@ -195,5 +195,5 @@ def recall(true_data, predicted_data):
         else:
             return 0
     else:
-        return np.sum(true_data * predicted_data) / true_data.sum()
+        return 1.0*np.sum(true_data * predicted_data) / true_data.sum()
 
