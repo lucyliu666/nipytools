@@ -32,7 +32,7 @@ def dice_coef(a, b):
     if not a.sum():
         if not b.sum():
             return 1.0
-    return 2 * np.sum(a * b) / (a.sum() + b.sum())
+    return 2.0 * np.sum(a * b) / (a.sum() + b.sum())
 
 def corr4d(x, y):
     """
