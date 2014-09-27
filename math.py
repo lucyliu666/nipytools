@@ -4,6 +4,7 @@
 import numpy as np
 from scipy import stats
 import matplotlib.pylab as pl
+import scipt.ndimage as ndimage
 
 def jaccard_index(a, b):
     """
@@ -92,7 +93,8 @@ def corr3d(x, y):
     y_vector = y_vector[idx]
     print np.mean(y_vector)
     #r = np.corrcoef(x_vector.T, y_vector.T)
-    slope, intercept, r_value, p_value, std_err = stats.linregress(y_vector.T, x_vector.T)
+    slope, intercept, r_value, p_value, std_err = stats.linregress(y_vector.T,
+                                                                   x_vector.T)
     print slope
     print intercept
     print "Pearson's correlation coefficient is "
@@ -197,3 +199,17 @@ def recall(true_data, predicted_data):
     else:
         return 1.0*np.sum(true_data * predicted_data) / true_data.sum()
 
+def smooth_data(data, sigma):
+    """
+    Smooth each 3D volume in input data.
+
+    """
+    dim = len(data.shape)
+    if dim == 4:
+        '4D data input ...'
+        vol_num = data.shape[3]
+        for i in range(vol_num):
+            data[..., i] = ndimage.gaussian_filter(data[..., i], sigma)
+    else:
+        data = ndimage.gaussian_filter(data, sigma)
+    return data
