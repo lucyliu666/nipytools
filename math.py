@@ -4,7 +4,7 @@
 import numpy as np
 from scipy import stats
 import matplotlib.pylab as pl
-import scipt.ndimage as ndimage
+import scipy.ndimage as ndimage
 
 def jaccard_index(a, b):
     """
