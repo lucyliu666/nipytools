@@ -5,6 +5,9 @@ import numpy as np
 from scipy import stats
 import matplotlib.pylab as pl
 import scipy.ndimage as ndimage
+import commands
+import time
+import os
 
 def jaccard_index(a, b):
     """
@@ -213,3 +216,32 @@ def smooth_data(data, sigma):
     else:
         data = ndimage.gaussian_filter(data, sigma)
     return data
+
+def mutual_information(x, y, n_neighbor=None):
+    """
+    Calculate mutual information of 2 variables.
+    The function is based on a executable `MIxnyn`.
+
+    """
+    if not n_neighbor:
+        kneig = 6
+
+    m = np.array(x)
+    m = m.reshape(-1, 1)
+    n = np.array(y)
+    n = n.reshape(-1, 1)
+    r_m = m.shape[0]
+    r_n = n.shape[0]
+    if not r_m == r_n:
+        print 'Error - dimension not match!'
+        return
+    
+    data = np.hstack([m, n])
+    tmp_file = os.path.join('/tmp', 'MIxnyn_data_' + str(time.time()))
+    np.savetxt(tmp_file, data)
+
+    cmd_str = ' '.join(['MIxnyn', tmp_file, str(1), str(1), str(r_m),
+                        str(kneig)])
+    status, output = commands.getstatusoutput(cmd_str)
+    return float(output)
+
