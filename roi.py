@@ -51,3 +51,31 @@ def geometric_center(data):
     max_coord = map(np.max, coord)
     min_coord = map(np.min, coord)
     return (np.array(max_coord) + np.array(min_coord))/2
+
+def get_roi_coord(roi_data):
+    """
+    Get coordinates of a ROI.
+
+    """
+    coords = roi_data.nonzero()
+    vxl_num = coords[0].shape[0]
+    c = [[coords[0][i], coords[1][i], coords[2][i]] for i in range(vxl_num)]
+    return c
+
+def get_x_flipped_coord(coord):
+    """
+    Return the voxel coordinates flipped along x axis.
+
+    """
+    c = [[90 - line[0], line[1], line[2]] for line in coord]
+    return c
+
+def get_voxel_value(coord, data):
+    """
+    Get voxel data based on input coordiantes.
+
+    """
+    v = [data[tuple(c)] for c in coord]
+    return v
+
+
