@@ -62,6 +62,19 @@ def get_roi_coord(roi_data):
     c = [[coords[0][i], coords[1][i], coords[2][i]] for i in range(vxl_num)]
     return c
 
+def load_coord_file(coord_file):
+    """
+    Load a file containing coordinates.
+
+    """
+    info = open(coord_file).readlines()
+    info = [line.strip().split(',') for line in info]
+    c = []
+    for line in info:
+        temp = [int(item) for item in line]
+        c.append(line)
+    return c
+
 def get_x_flipped_coord(coord):
     """
     Return the voxel coordinates flipped along x axis.
