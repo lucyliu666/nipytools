@@ -91,4 +91,27 @@ def get_voxel_value(coord, data):
     v = [data[tuple(c)] for c in coord]
     return v
 
+def get_roi_peak_coord(roi_data, value_data):
+    """
+    Get the peak of a ROI based on value_data.
+
+    """
+    roi_data[roi_data>0] = 1
+    masked_data = roi_data * value_data
+    c = np.unravel_index(masked_data.argmax(), masked_data.shape)
+    return c
+
+def cube_roi(data, x, y, z, radius, value):
+    """
+    Generate a cube roi which center in (x, y, z).
+
+    """
+    for n_x in range(x - radius, x + radius + 1):
+        for n_y in range(y - radius, y + radius + 1):
+            for n_z in range(z - radius, z + radius + 1):
+                try:
+                    data[n_x, n_y, n_z] = value
+                except IndexError:
+                    pass
+    return data
 
