@@ -245,3 +245,12 @@ def mutual_information(x, y, n_neighbor=None):
     status, output = commands.getstatusoutput(cmd_str)
     return float(output)
 
+def fisher_r2z(data):
+    """
+    Return a z value via Fisher r-to-z transformation.
+
+    """
+    data[data==1] = 0.999999
+    data[data==-1] = -0.999999
+    return np.load((1+data)/(1-data)) / 2
+
