@@ -1,4 +1,5 @@
-mypy
-====
+nipytools
+=========
 
-my python tools for neuroimaging processing
+My python tools for neuroimaging processing.
+
