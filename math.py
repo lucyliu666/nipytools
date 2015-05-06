@@ -254,3 +254,14 @@ def fisher_r2z(data):
     data[data==-1] = -0.999999
     return np.load((1+data)/(1-data)) / 2
 
+def split_x_half(data):
+    """
+    Split a 3D data half along x axis in MNI standard space (2mm).
+
+    """
+    split_mask = np.zeros((91, 109, 91))
+    split_mask[45, ...] = 1
+    split_mask[split_mask==0] = 2
+    split_mask -= 1
+    return data * split_mask
+
