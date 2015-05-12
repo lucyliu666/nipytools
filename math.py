@@ -259,9 +259,11 @@ def split_x_half(data):
     Split a 3D data half along x axis in MNI standard space (2mm).
 
     """
-    split_mask = np.zeros((91, 109, 91))
-    split_mask[45, ...] = 1
-    split_mask[split_mask==0] = 2
-    split_mask -= 1
-    return data * split_mask
+    data_shape = data.shape
+    if data_shape == (91, 109, 91):
+        data[45, ...] = 0
+        return data
+    else:
+        print 'The input date is not in the MNI space (2mm).'
+        return
 
