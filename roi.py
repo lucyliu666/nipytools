@@ -115,3 +115,20 @@ def cube_roi(data, x, y, z, radius, value):
                     pass
     return data
 
+def sphere_roi(data, x, y, z, radius, value):
+    """
+    generate a sphere roi which center in (x, y, z).
+
+    """
+    for n_x in range(x - radius, x + radius + 1):
+        for n_y in range(y - radius, y + radius + 1):
+            for n_z in range(z - radius, z + radius + 1):
+                n_coord = np.array((n_x, n_y, n_z))
+                coord = np.array((x, y, z))
+                if np.linalg.norm(coord - n_coord) <= radius:
+                    try:
+                        data[n_x, n_y, n_z] = value
+                    except IndexError:
+                        pass
+    return data
+
