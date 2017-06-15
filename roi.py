@@ -89,7 +89,7 @@ def get_voxel_value(coord, data):
 
     """
     v = [data[tuple(c)] for c in coord]
-    return v
+    return np.array(v)
 
 def get_roi_peak_coord(roi_data, value_data):
     """
