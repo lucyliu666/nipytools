@@ -35,13 +35,11 @@ def run_save_cmd(cmd_list, f):
     f.write(' '.join(cmd_list) + '\n')
     subprocess.call(cmd_list)
 
-def save2nifti(data, header, file_name):
+def save2nifti(data, affine, file_name):
     """
     Save data to a nifti file.
 
     """
-    header['cal_max'] = data.max()
-    header['cal_min'] = 0
-    img = nib.Nifti1Image(data, None, header)
+    img = nib.Nifti1Image(data, affine)
     nib.save(img, file_name)
 
