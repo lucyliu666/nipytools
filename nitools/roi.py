@@ -139,7 +139,7 @@ def extract_mean_ts(source, mask):
     src_dim = len(source.shape)
     if src_dim > 3:
         source_len = source.shape[3]
-        data = np.zeros((source_len, 1))
+        data = np.zeros(source_len)
         for idx in range(source_len):
             temp = source[..., idx]
             temp = temp * mask
