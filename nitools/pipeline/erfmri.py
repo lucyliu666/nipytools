@@ -11,11 +11,9 @@ def copypar(scanlist_file):
     """Copy par file for each separate calculation."""
     # get data info from scanlist file
     [scan_info, subj_list] = pyunpack.readscanlist(scanlist_file)
-
     # dir config
     par_dir = os.path.join(scan_info['pardir'], 'emo')
     nii_dir = scan_info['sessdir']
-
     for subj in subj_list:
         # get run infor for emo task
         sid = subj.sess_ID
@@ -39,14 +37,11 @@ def copypar(scanlist_file):
 
 def runfeat(scanlist_file):
     [scan_info, subj_list] = pyunpack.readscanlist(scanlist_file)
-
     # dir config
     doc_dir=os.path.abspath(os.path.join(scan_info['pardir'],'../doc/feat_emo'))
     nii_dir = scan_info['sessdir']
-    
     # template config
     template_fsf = os.path.join(doc_dir, 'trial.fsf')
-
     for subj in subj_list:
         # get run infor for emo task
         sid = subj.sess_ID
@@ -71,14 +66,11 @@ def runfeat(scanlist_file):
 
 def clcfeat(scanlist_file):
     [scan_info, subj_list] = pyunpack.readscanlist(scanlist_file)
-
     # dir config
     doc_dir=os.path.abspath(os.path.join(scan_info['pardir'],'../doc/feat_emo'))
     nii_dir = scan_info['sessdir']
-    
     # template config
     template_fsf = os.path.join(doc_dir, 'trial.fsf')
-
     for subj in subj_list:
         # get run infor for emo task
         sid = subj.sess_ID
@@ -103,24 +95,23 @@ def clcfeat(scanlist_file):
                     print 'No feat dir found - %s'%(feat_dir)
 
 def standardizecope(scanlist_file, stage):
-    """For stage 1: update feat reg;
+    """For stage 1: `updatefeatreg`;
     For stage 2: Apply nonlinear warp for cope files.
     """
     [scan_info, subj_list] = pyunpack.readscanlist(scanlist_file)
     # dir config
     nii_dir = scan_info['sessdir']
-    imgs = ['cope', 'tstat', 'zstst', 'varcope']
-
     # warp source for nonlinear registration
     srcfiles = ['highres2standard_2mm.mat', 'highres2standard_warp_2mm.nii.gz']
     fsl_dir = os.getenv('FSL_DIR')
     mnistd = os.path.join(fsl_dir, 'data', 'standard',
                           'MNI152_T1_2mm_brain.nii.gz')
-
+    # parameter estimates needed to be standardized
+    peimgs = ['cope', 'tstat', 'zstst', 'varcope']
     for subj in subj_list:
         # get run infor for emo task
         sid = subj.sess_ID
-        anat_dir = os.path.join(nii_dir, sid, '3danat', 'reg_fsl')
+        anat_dir = os.path.join(nii_dir, sid[:3]+'1', '3danat', 'reg_fsl')
         emo_dir = os.path.join(nii_dir, sid, 'emo')
         # get par index for each emo run
         if not 'emo' in subj.run_info:
@@ -138,9 +129,32 @@ def standardizecope(scanlist_file, stage):
                     for f in srcfiles:
                         shutil.copy(os.path.join(anat_dir, f),
                                     os.path.join(funcreg, f.replace('_2mm','')))
-                    subprocess.call('fsl_sub -q veryshort.q updatefeatreg %s'%(feat_dir), shell=True)
+                    subprocess.call(['fsl_sub', '-q', 'veryshort.q', 
+                                     'updatefeatreg', feat_dir],
+                                    shell=True)
+                else:
+                    refvol = os.path.join(funcreg, 'standard.nii.gz')
+                    warpvol=os.path.join(funcreg,'highres2standard_warp.nii.gz')
+                    premat = os.path.join(funcreg, 'example_func2highres.mat')
+                    targdir = os.path.join(feat_dir, 'reg_standard', 'stats')
+                    if not os.path.join(targ_dir):
+                        print targdir + 'not exist, create it automatically.'
+                        subprocess.call(['mkdir', targdir])
+                    statsdir = os.path.join(feat_dir, 'stats')
+                    fl = os.listdir(statsdir)
+                    file_num = len([item for item in fl if item[0:4]=='cope'])
+                    for idx in range(1, file_num+1):
+                        for img in peimgs:
+                            infile = os.path.join(statsdir, img+str(idx))
+                            outfile = os.path.join(targdir, img+str(idx))
+                            subprocess.call(['fsl_sub', '-q', 'veryshort.q',
+                                             'applywarp', '--ref='+refvol,
+                                             '--in='+infile, '--out='+outfile,
+                                             '--warp='+warpvol,
+                                             '--premat='+premat,
+                                             '--interp=trilinear'])
 
-def pemerge(scanlist_file):
+def mergecope(scanlist_file):
     [scan_info, subj_list] = pyunpack.readscanlist(scanlist_file)
 
     # dir config
@@ -175,10 +189,14 @@ def pemerge(scanlist_file):
 
 
 if __name__ == '__main__':
+    """A pipeline for estimating brain activity trial-by-trial in event-related
+    fMRI design using LS-S(Least Squares - Separate) method, for details, see
+    Mumford et al., 2012 (NeuroImage).
+    """
     scanlist_file = r'/nfs/cell_b/project/emotionPro/doc/scanlist.csv'
     #copypar(scanlist_file)
     #runfeat(scanlist_file)
     #clcfeat(scanlist_file)
-    #pemerge(scanlist_file)
     standardizecope(scanlist_file, 1)
+    #mergecope(scanlist_file)
 
