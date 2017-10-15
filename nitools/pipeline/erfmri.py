@@ -58,6 +58,7 @@ def runfeat(scanlist_file):
                 with open(template_fsf, 'r') as fin:
                     with open(t_fsf, 'w') as fout:
                         for line in fin:
+                            line - line.replace('AAA', sid[:3]+'1')
                             line = line.replace('SSS', sid)
                             line = line.replace('RRR', '00'+run_idx[i])
                             line = line.replace('TTT', 't%s'%(j+1))
