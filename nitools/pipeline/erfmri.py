@@ -130,8 +130,8 @@ def standardizecope(scanlist_file, stage):
                     for f in srcfiles:
                         shutil.copy(os.path.join(anat_dir, f),
                                     os.path.join(funcreg, f.replace('_2mm','')))
-                    subprocess.call(['fsl_sub', '-q', 'veryshort.q', 
-                                     'updatefeatreg', feat_dir],
+                    subprocess.call(' '.join(['fsl_sub', '-q', 'veryshort.q', 
+                                              'updatefeatreg', feat_dir]),
                                     shell=True)
                 else:
                     refvol = os.path.join(funcreg, 'standard.nii.gz')
@@ -140,7 +140,7 @@ def standardizecope(scanlist_file, stage):
                     targdir = os.path.join(feat_dir, 'reg_standard', 'stats')
                     if not os.path.join(targ_dir):
                         print targdir + 'not exist, create it automatically.'
-                        subprocess.call(['mkdir', targdir])
+                        os.makedirs(targdir)
                     statsdir = os.path.join(feat_dir, 'stats')
                     fl = os.listdir(statsdir)
                     file_num = len([item for item in fl if item[0:4]=='cope'])
@@ -148,12 +148,16 @@ def standardizecope(scanlist_file, stage):
                         for img in peimgs:
                             infile = os.path.join(statsdir, img+str(idx))
                             outfile = os.path.join(targdir, img+str(idx))
-                            subprocess.call(['fsl_sub', '-q', 'veryshort.q',
-                                             'applywarp', '--ref='+refvol,
-                                             '--in='+infile, '--out='+outfile,
-                                             '--warp='+warpvol,
-                                             '--premat='+premat,
-                                             '--interp=trilinear'])
+                            subprocess.call(' '.join(['fsl_sub',
+                                                      '-q', 'veryshort.q',
+                                                      'applywarp',
+                                                      '--ref='+refvol,
+                                                      '--in='+infile,
+                                                      '--out='+outfile,
+                                                      '--warp='+warpvol,
+                                                      '--premat='+premat,
+                                                      '--interp=trilinear'],
+                                            shell=True)
 
 def mergecope(scanlist_file):
     [scan_info, subj_list] = pyunpack.readscanlist(scanlist_file)
