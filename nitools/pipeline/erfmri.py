@@ -157,17 +157,17 @@ def standardizecope(scanlist_file, stage):
                                                       '--warp='+warpvol,
                                                       '--premat='+premat,
                                                       '--interp=trilinear'],
-                                            shell=True)
+                                            shell=True))
 
 def mergecope(scanlist_file):
     [scan_info, subj_list] = pyunpack.readscanlist(scanlist_file)
 
     # dir config
-    doc_dir=os.path.abspath(os.path.join(scan_info['pardir'],'../doc/feat_emo'))
+    par_dir = os.path.join(scan_info['pardir'], 'emo')
     nii_dir = scan_info['sessdir']
-    
-    # template config
-    template_fsf = os.path.join(doc_dir, 'trial.fsf')
+
+    seq_prefix = r'trial_seq'
+    seq_type = ['train', 'test']
 
     for subj in subj_list:
         # get run infor for emo task
@@ -180,18 +180,19 @@ def mergecope(scanlist_file):
         for i in range(len(run_idx)):
             run_dir = os.path.join(subj_dir, '00'+run_idx[i])
             lss_dir = os.path.join(run_dir, 'lss')
-            for j in range(80):
-                t_fsf = os.path.join(lss_dir, 't%s'%(j+1), 'design.fsf')
-                feat_dir = os.path.join(lss_dir, 't%s'%(j+1), 'func.feat')
-                if os.path.exists(t_fsf):
-                    os.system('rm %s'%t_fsf)
-                else:
-                    print 'No fsf file found - %s'%(t_fsf)
-                if os.path.exists(feat_dir):
-                    os.system('rm -rf %s'%feat_dir)
-                else:
-                    print 'No feat dir found - %s'%(feat_dir)
-
+            for st in seq_type:
+                seq_file = open(os.path.join(par_dir,
+                                seq_prefix+'_'+str(i+1)+'_'+st+'.txt'))
+                seq = open(suq_file).readlines()
+                seq = [line.strip().split(',') for line in seq]
+                merged_file = os.path.join(run_dir, st+'_merged_cope.nii.gz')
+                strcmd = 'fslmerge -t %s'%(merged_file)
+                for line in seq:
+                    tmp_file = os.path.join(lss_dir, line[0], 'func.feat',
+                                 'reg_standard', 'stats', 'cope1.nii.gz')
+                    strcmd = strcmd + ' ' + tmp_file
+                subprocess.call(strcmd, shell=True)
+            
 
 if __name__ == '__main__':
     """A pipeline for estimating brain activity trial-by-trial in event-related
