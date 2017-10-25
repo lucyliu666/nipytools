@@ -181,9 +181,9 @@ def mergecope(scanlist_file):
             run_dir = os.path.join(subj_dir, '00'+run_idx[i])
             lss_dir = os.path.join(run_dir, 'lss')
             for st in seq_type:
-                seq_file = open(os.path.join(par_dir,
-                                seq_prefix+'_'+str(i+1)+'_'+st+'.txt'))
-                seq = open(suq_file).readlines()
+                seq_file = os.path.join(par_dir,
+                                seq_prefix+'_'+str(i+1)+'_'+st+'.txt')
+                seq = open(seq_file).readlines()
                 seq = [line.strip().split(',') for line in seq]
                 merged_file = os.path.join(run_dir, st+'_merged_cope.nii.gz')
                 strcmd = 'fslmerge -t %s'%(merged_file)
