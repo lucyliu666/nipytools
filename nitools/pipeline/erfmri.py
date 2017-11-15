@@ -108,7 +108,7 @@ def standardizecope(scanlist_file, stage):
     mnistd = os.path.join(fsl_dir, 'data', 'standard',
                           'MNI152_T1_2mm_brain.nii.gz')
     # parameter estimates needed to be standardized
-    peimgs = ['cope', 'tstat', 'zstst', 'varcope']
+    peimgs = ['cope', 'tstat', 'zstat', 'varcope']
     for subj in subj_list:
         # get run infor for emo task
         sid = subj.sess_ID
@@ -138,7 +138,7 @@ def standardizecope(scanlist_file, stage):
                     warpvol=os.path.join(funcreg,'highres2standard_warp.nii.gz')
                     premat = os.path.join(funcreg, 'example_func2highres.mat')
                     targdir = os.path.join(feat_dir, 'reg_standard', 'stats')
-                    if not os.path.join(targ_dir):
+                    if not os.path.exists(targdir):
                         print targdir + 'not exist, create it automatically.'
                         os.makedirs(targdir)
                     statsdir = os.path.join(feat_dir, 'stats')
@@ -156,8 +156,8 @@ def standardizecope(scanlist_file, stage):
                                                       '--out='+outfile,
                                                       '--warp='+warpvol,
                                                       '--premat='+premat,
-                                                      '--interp=trilinear'],
-                                            shell=True))
+                                                      '--interp=trilinear']),
+                                            shell=True)
 
 def mergecope(scanlist_file):
     [scan_info, subj_list] = pyunpack.readscanlist(scanlist_file)
@@ -181,9 +181,9 @@ def mergecope(scanlist_file):
             run_dir = os.path.join(subj_dir, '00'+run_idx[i])
             lss_dir = os.path.join(run_dir, 'lss')
             for st in seq_type:
-                seq_file = open(os.path.join(par_dir,
-                                seq_prefix+'_'+str(i+1)+'_'+st+'.txt'))
-                seq = open(suq_file).readlines()
+                seq_file = os.path.join(par_dir,
+                                seq_prefix+'_'+str(i+1)+'_'+st+'.txt')
+                seq = open(seq_file).readlines()
                 seq = [line.strip().split(',') for line in seq]
                 merged_file = os.path.join(run_dir, st+'_merged_cope.nii.gz')
                 strcmd = 'fslmerge -t %s'%(merged_file)
