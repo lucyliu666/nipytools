@@ -18,6 +18,15 @@ def vxl2mni(coordlist):
         mni_list.append(temp)
     return mni_list
 
+def mni2vxl(coord):
+    """Return the coordinate in voxel/ijk space of FSL standard template (2mm)
+    based on input MNI coordinate.
+    """
+    i = int((90.0 - coord[0]) / 2)
+    j = int((coord[1] + 126) / 2)
+    k = int((coord[2] + 72) / 2)
+    return (i, j, k)
+
 def read_par(par_file, tr):
     info = open(par_file).readlines()
     info = [line.strip().split() for line in info]
